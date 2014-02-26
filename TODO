@@ -1,0 +1,31 @@
+IMMEDIATE
+- Write lots and lots of examples for every tutorial
+- Grammar correction
+- Tutorials are sloppy. The potential is there for them to be explained much better
+- Maybe reorganise the tutorials? Is there a better structure?
+- Images! Lots of images should be inserted into the tutorials, illustrating what's being described.
+
+
+
+IDEAS
+- Some more intermediate tutorials on common shader techniques
+	* normal mapping
+	* TBN space and what it's used for
+	* parallax mapping
+	* parallax occlusion mapping
+	* relief mapping
+	* using multiple passes
+	* multipass lighting
+	* toon effect
+- some advanced tutorials
+	* render targets and post-processing
+	* bloom/HDR
+	* local bloom/HDR
+	* vertex fur
+	* shadow mapping
+	* refraction
+	* reflection
+	* light scattering
+	* motion blur
+	* depth of field
+
