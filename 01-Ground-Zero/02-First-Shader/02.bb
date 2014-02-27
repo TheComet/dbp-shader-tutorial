@@ -5,15 +5,15 @@
 
 You will learn the following in this chapter.
 
-[b]*[/b] The basic syntax of HLSL
-[b]*[/b] The structure of a shader
-[b]*[/b] Writing an absolute minimalistic shader
+[b]*[/b] The basic syntax of HLSL.
+[b]*[/b] The structure of a shader program.
+[b]*[/b] Writing an absolute minimalistic shader, which will draw an object as a single colour.
 
 
 
 [b]Getting used to the syntax[/b]
 
-HLSL is what I like to call a "simple C-like syntax". There are no pointers or anything fancy, making it a very simple language to pick up.
+HLSL is an abbreviation for "High Level Shader Language", developed by Microsoft for DirectX. It has what I like to call a "simple C-like syntax". There are no pointers or anything fancy, making it a very simple language to pick up.
 
 Just like DBP has its fundamental data types, so does HLSL.
 
@@ -25,18 +25,18 @@ half test4; // 16-bit floating point value
 float test5; // 32-bit floating point value
 double test6; // 64-bit floating point value[/code]
 
-But there are also fancier types, such as vectors. Afer all, the GPU is designed for 3D math (note: Only the most important ones are listed):
+But there are also fancier types, such as vectors. After all, the GPU is designed for 3D math (note: Only the most important ones are listed):
 [code]float2 test1; // 2-component vector
 float3 test2; // 3-component vector
 float4 test3; // 4-component vector[/code]
 
-Note that you can basically hang a number between 1 and 4 onto the end of a scalar datatype and it becomes a vector datatype, i.e. there's also an "int3".
+Note that you can basically hang a number from 1 and 4 onto the end of a scalar datatype and it becomes a vector datatype, i.e. there's also an "int3" or a "double2".
 
 Of course, there are also matrices:
 [code]float4x4 test1; // a 4 by 4 matrix with 16 floating point values
 float 3x4 test2; // a 3 by 4 matrix with 12 floating point values[/code]
 
-The last important datatype is the [b]struct[/b]:
+The last important datatype is the [b]struct[/b], which allows us to group together primitive datatypes to form a custom type:
 [code]struct myStruct
 {
 	float2 UV;
@@ -45,7 +45,7 @@ The last important datatype is the [b]struct[/b]:
 
 myStruct test1; // test1 now has the components test1.UV and test1.something[/code]
 
-You can think of structs as the equivalent to DBPs "User Defined Types" (UDT):
+You can think of a struct as the equivalent to DBPs "User Defined Types" (UDT):
 [code lang=dbp]type myType
 	x as float
 	y as float
@@ -60,7 +60,8 @@ float result = test.x + test.y + test.z + test.w[/code]
 Sometimes, you might want to assign a float3 to a float4. This can be done by using a [b]constructor[/b]:
 [code]float3 test1 = {1.0f, 1.0f, 1.0f};
 
-float4 anotherThing = float4( test1, 1.0f); // this assignes the x, y, and z components of "test" to the x, y, and z components of "anotherThing", and sets the w component of "anotherThing" to 1.0f[/code]
+// using a constructor
+float4 anotherThing = float4( test1, 1.0f); // this assigns the x, y, and z components of "test" to the x, y, and z components of "anotherThing", and sets the w component of "anotherThing" to 1.0f[/code]
 
 One last special, and very handy feature of HLSL syntax is the ability to use multiple components via dot notation:
 [code]float3 test1 = {1.0f, 1.0f, 1.0f};
@@ -75,18 +76,20 @@ Note that it's also possible to write the components in any order, i.e. [b]test1
 
 So let's examine the [b]bare minimum[/b] required to write a functioning shader.
 
-At the very top of your shader are various [b]shader constants[/b]. Some of these are user-defined, and can be set through DBP by using the commands [b]set effect constant float[/b] or [b]set effect constant vector[/b]. The other way is by using what's known as [b]semantics[/b].
+At the very top of your shader are various [b]shader constants[/b]. Some of these are user-defined, and can be set through DBP by using the commands [b]set effect constant float[/b] or [b]set effect constant vector[/b]. Others gain their values from what's known as [b]semantics[/b].
 
 In Tutorial 01, we discussed how the vertex shader transformed Bob into world space, then into view space, then into projection space by using matrices. There are a bunch of pre-defined semantics for accessing these matrices, one of them being the following:
 
 [code]// shader semantics
 float4x4 matWorldViewProjection : WORLDVIEWPROJECTION;[/code]
 
-As the name implies, the world, view, and projection matrices have all been multiplied together to form a single matrix, unsurprisingly called the [b]world view projection matrix[/b]. If you multiply a vertex by this matrix, you transform it from [b]object space[/b] into [b]projection space[/b].
+As the name implies, the world, view, and projection matrices have all been multiplied together to form a single matrix, unsurprisingly called the [b]world view projection matrix[/b]. If you multiply a vertex by this matrix, you transform it from [b]object space[/b] directly into [b]projection space[/b].
 
 By writing the code above, the variable [b]matWorldViewProjection[/b] will automatically be assigned the world view projection matrix, because [b]WORLDVIEWPROJECTION[/b] is the semantic for said matrix.
 
 The next thing we need is to consider the data going in and out of the vertex and pixel shader programs.
+
+We know the vertex shader "does things" with vertices. For instance, it can transform vertex positions into different 3D spaces, like it did with Bob.
 
 In our case, all we really need are the [b]position[/b] attributes of each vertex as input:
 [code]struct VS_INPUT
@@ -104,7 +107,9 @@ From our vertex shader, we'll want to output the new position of the vertex afte
 
 As you can see, we're using the pre-defined semantic [b]POSITION[/b], which automatically assignes the position attribute of the current vertex being processed.
 
-NOTE: If you were paying attention, you'll notice one of the semantics had a leading "0", while the other did not. An object in DBP has various [b]stages[/b]. The position of the vertex is written to stage 0 of the object. Theoretically it is possible to have a vertex with multiple positions, but frankly, that's retarded. The output POSITION doesn't require stages.
+NOTE: If you were paying attention, you'll notice one of the semantics had a leading "0", while the other did not. A vertex has various [b]stages[/b]. The position of the vertex is written to stage 0 of the object. Theoretically it is possible to have a vertex with multiple positions, but frankly, that's retarded, so we only read from stage 0.
+
+The output POSITION doesn't require stages, hence why there is no number.
 
 Next, the input of the pixel shader program. Since this is the simplest of shaders, there is nothing to input, so we'll just leave it blank:
 [code]struct PS_INPUT
@@ -154,7 +159,7 @@ Next up, we need a pixel shader. Here it is.
 
 This little section of code is where all of our pixel manipulation happens. In our case, we simply set every pixel to have the colour green.
 
-[b]Very important to understand:[/b] The pixel shader is [b]executed once for every pixel part of the object on the screen[/b]. This means that [b]ps_main[/b] will be called once for every pixel on the screen that is part of that object. If you had a 1920x1080 display, and the object were close enough to the camera to cover it entirely, [b]ps_main[/b] would be called 1920x1080=2073600 times. You may have also guessed this one: Yes, all 2073600 instances of ps_main are executed in parallel, one on each core of the GPU.
+[b]Very important to understand:[/b] The pixel shader is [b]executed once for every pixel[/b]. This means that [b]ps_main[/b] will be called once for every pixel on the screen that is part of that object. If you had a 1920x1080 display, and the object were close enough to the camera to cover it entirely, [b]ps_main[/b] would be called 1920x1080=2073600 times. You may have also guessed this one: Yes, all 2073600 instances of ps_main are executed in parallel, one on each core of the GPU.
 
 Obviously, the GPU may not have 2073600 cores, in which case the programs are simply queued up so there are always a maximum number of them instantiated. The order in which this happens is undefined.
 
@@ -178,7 +183,7 @@ DBP supports up to shader model 2.0.
 
 [b]*[/b] A [b]vertex shader[/b] is used to transform an object from [b]object space[/b] into another space (most commonly [b]projection space[/b]), and can also be used to manipulate vertex attributes.
 [b]*[/b] A [b]pixel shader[/b] is used to manipulate the colour of an object's surface at a per-pixel basis.
-[b]*[/b] A [b]semantic[/b] can be used to access important shader values such as vertex attributes or tranformation matrices, and assign them to variables.
+[b]*[/b] A [b]semantic[/b] can be used to access important shader constants such as vertex attributes or transformation matrices, and assign them to variables.
 [b]*[/b] Vertex and pixel shader programs are executed [b]in parallel[/b]: A vertex shader program for every vertex, and a pixel shader program for every pixel on the screen.
 
 Here is the entire shader from above:

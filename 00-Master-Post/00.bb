@@ -1,7 +1,13 @@
 [b][center]TheComet's Shader Tutorials[/center]
-[center]Introduction[/center][/b]
+[i][center]Outstanding Support Provided by Green Gandalf[/center][/i][/b]
 
-Shaders are still considered by many in the DBP programming community a form of black magic. There's no easy entry point for the total beginner, and the existing shaders aren't at all helpful due to the lack of comments in the code.
+[center][ic:book] Master Post[/center]
+
+
+
+[b]Introduction[/b]
+
+Shaders are still considered by many in the DBP programming community a form of black magic. There's no easy entry point for the total beginner, and the existing shaders aren't very helpful due to the lack of comments and sheer amount of mathematics in the code.
 
 These series are my attempt at making it easy for the total beginner to start programming shaders.
 
@@ -13,7 +19,7 @@ In order to benefit the most from these series, always download the attached exa
 
 [b]Tutorial Content[/b]
 
-[b]Beginner Tutorials[/b]
+[b]Ground Zero[/b]
 [b]*01[/b] How the graphics card works, and what processes are involved to get your object drawn to the screen.
 [b]*02[/b] Introduction to HLSL. Writing your very first shader. What are shader semantics? How are vertices projected?
 [b]*03[/b] Understanding the vertex shader. What coordinate system is used? Why are the coordinates 4-dimensional?
@@ -21,9 +27,9 @@ In order to benefit the most from these series, always download the attached exa
 [b]*05[/b] Understanding the pixel shader. What are UV coordinates?
 [b]*06[/b] Sampling a texture using the pixel shader.
 
-[b]Intermediate Tutorials[/b]
-[b]*11[/b] First look at lighting. Writing a diffuse shader (DBP's default lighting system).
-[b]*12[/b] 
+[b]Basic Lighting Techniques[/b]
+[b]*01[/b] First look at lighting. Writing a diffuse shader (DBP's default lighting system).
+[b]*02[/b] 
 
 Feel free to leave feedback to help improve the information provided! And always remember: If you run into trouble, the forums are here to help.
 

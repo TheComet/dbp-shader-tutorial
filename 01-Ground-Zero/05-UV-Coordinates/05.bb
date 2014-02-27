@@ -3,9 +3,11 @@
 
 [b]Synopsis[/b]
 
-[b]*[/b] What are UV coordinates?
-[b]*[/b] How are they passed to the pixel shader?
-[b]*[/b] How are colours encoded and why are they also 4-dimensional?
+You will learn:
+
+[b]*[/b] What UV coordinates are.
+[b]*[/b] How they are passed to the pixel shader.
+[b]*[/b] How colours are encoded and why are they also 4-dimensional.
 
 
 
@@ -15,9 +17,9 @@ In tutorial 01 we discussed [b]vertex attributes[/b]. Another attribute a vertex
 
 When texturing an object, we have to somehow remember how the texture was "wrapped" onto the object. This is done by saving where a vertex was located on a texture as an attribute of the vertex itself.
 
-In DBP, you usually work with [b]pixel coordinates[/b]. If you load a 256x256 image, to draw in the very middle of the image you'd have to use the coordinates 128,128.
+In DBP, you usually work with [b]pixel coordinates[/b]. If you load a 256x256 image, you'd have to use the coordinates 128,128 to draw to the very middle of the image.
 
-GPUs don't do this because textures can have different resolutions. Instead, the GPU defines the [b]top left corner[/b] to be at [b]0,0[/b], and the [b]bottom right corner[/b] to be at [b]1,1[/b]. If you wanted to draw in the very middle of the image, you'd have to do it at [b]0.5,0.5[/b], which is exactly half of [b]1,1[/b].
+GPUs don't do this because textures can have different resolutions. Instead, the GPU defines the [b]top left corner[/b] to be at [b]0.0, 0.0[/b], and the [b]bottom right corner[/b] to be at [b]1.0, 1.0[/b]. If you wanted to draw in the very middle of the image, you'd have to do it at [b]0.5, 0.5[/b], which is exactly half of [b]1.0, 1.0[/b].
 
 [img]plane with 0,0 -- 1,1 coordinates[/img]
 
@@ -29,7 +31,7 @@ This makes it easy to slap an image onto it.
 
 So when rendering an object, every vertex knows where it was located on the texture, and stores this its [b]UV coordinate[/b] attribute.
 
-You can access a verex' UV coordinate with the semantic [b]TEXCOORD0[/b].
+You can access a vertex' UV coordinate with the semantic [b]TEXCOORD0[/b].
 
 Notice the "0" in "TEXCOORD0". You can apply more than one texture to the same object, and every texture can be mapped differently to the object. The second texture could be accessed through TEXOORD1, and so on.
 
@@ -37,7 +39,7 @@ Notice the "0" in "TEXCOORD0". You can apply more than one texture to the same o
 
 [b]Let's see some shader code![/b]
 
-Texture coordinates are a little special. They are an attribute of [b]vertices[/b], but they aren't used by the vertex shader. The pixel shader is what needs them. However, they need to be extracted by the vertex shader and passed on to the pixel shader.
+Texture coordinates are a little special. They are an attribute of [b]vertices[/b], but they aren't used by the vertex shader. The pixel shader is what needs them. However, they need to be extracted by the vertex shader and passed on to the pixel shader, because only the vertex shader has access to vertices.
 
 In order to do this, we modify the vertex shader input and output structs to include the new semantics:
 [code]struct VS_INPUT
@@ -61,17 +63,17 @@ Additionally, the pixel shader input struct also needs to read the information f
 Now, modify the vertex shader to read the texture coordinates from the vertices and output them for the pixel shader. This is as simple as copying the values from input to output:
 [code]VS_OUTPUT vs_main( VS_INPUT input )
 {
-        // declare output struct, so we can write output data
-        VS_OUTPUT output;
+	// declare output struct, so we can write output data
+	VS_OUTPUT output;
 
-        // take each position attribute of the incoming vertex and transform it into projection space
-        output.position = mul( input.position, matWorldViewProjection );
+	// take each position attribute of the incoming vertex and transform it into projection space
+	output.position = mul( input.position, matWorldViewProjection );
 
 	// output texture coordinates
 	output.texCoord = input.texCoord;
 
-        // return output data
-        return output;
+	// return output data
+	return output;
 }[/code]
 
 Awesome!
@@ -112,7 +114,7 @@ And just like with coordinates, each component can also be accessed via dot nota
 [b]coordinate.xyzw
 colour.rgba[/b]
 
-Where r is red, g is gree, b is blue, and a is alpha.
+Where r is red, g is green, b is blue, and a is alpha.
 
 Since we mapped the UV coordinates directly to the colour, you can see that the GPU [b]interpolates[/b] the UV coordinates between each vertex during rasterisation, to find an intermediate texture coordinate for the current pixel. That's why the colours have such smooth gradients.
 
@@ -121,8 +123,8 @@ Since we mapped the UV coordinates directly to the colour, you can see that the 
 [b]Summary[/b]
 
 [b]*[/b] The vertex shader needs to pass texture coordinates to the pixel shader.
-[b]*[/b] During rasterisation the UV coordinates are linearly interpolated for each pixel.
-[b]*[/b] UV coordinates are always between 0.0 and 1.0
+[b]*[/b] During rasterisation the UV coordinates are linearly interpolated between vertices for each pixel.
+[b]*[/b] UV coordinates are always between 0.0 and 1.0.
 [b]*[/b] Colours on the GPU are handled as four floating point values, each between 0.0 and 1.0.
 
 

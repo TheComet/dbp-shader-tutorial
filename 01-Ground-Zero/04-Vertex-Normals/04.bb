@@ -1,9 +1,10 @@
 [b][center]TheComet's Shader Tutorial[/center]
-[center]04 - A Closer Look At The Vertex Shader - Part 2[/center][/b]
+[center]04 - Vertex Normals[/center][/b]
 
 [b]Synopsis[/b]
 
-[b]*[/b] What are normals and how can I have fun with them?
+[b]*[/b] What normals are.
+[b]*[/b] How to have fun with normals.
 
 
 
@@ -54,7 +55,7 @@ And now change your vertex shader to the following:
         return output;
 }[/code]
 
-Now, in DBP, simply load and apply the shader to a more complex object:
+Then, in DBP, simply load and apply the shader to a more complex object:
 [code]rem setup screen
 sync on
 sync rate 60
@@ -89,14 +90,14 @@ loop[/code]
 
 As you can see, manipulating vertices with shaders is extremely easy and fast.
 
-If you don't understand how this works, let me give you some help. [b]input.position[/b] is the current location of the vertex. We also have access to a directional vector, the [b]vertex normal[/b], which tells us which direction is "away" from the object (perpendicular). If we multiply [b]fatness[/b] with [b]input.normal[/b], all we do is we change the length of the normal vector. By adding [b]input.position[/b] and [b]input.normal*fatness[/b] together, we're moving the vertex "away" from the object by exactly the distance [b]fatness[/b] specifies.
+If you don't understand how this works, let me give you some help. [b]input.position[/b] is the location of the current vertex. We also have access to a directional vector, the [b]vertex normal[/b], which tells us which direction is "away" from the object (perpendicular). If we multiply [b]fatness[/b] with [b]input.normal[/b], all we do is we change the length of the normal vector. By adding [b]input.position[/b] and [b]input.normal*fatness[/b] together, we're moving the vertex "away" from the object by exactly the distance [b]fatness[/b] specifies.
 
 
 
 [b]Summary[/b]
 
-[b]*[/b] A vertex normal is a directional vector, which is the average of all surface normals it connects. In layman's terms: "It poins away from the object's surface".
-[b]*[/b] A vertex normal is a [b]unit vector[/b]: This means it has the lenght of 1.0
+[b]*[/b] A vertex normal is a directional unit vector, which is the average of all surface normals it connects. In layman's terms: "It poins away from the object's surface".
+[b]*[/b] A vertex normal is a [b]unit vector[/b]: This means it has the length of 1.0.
 
 
 

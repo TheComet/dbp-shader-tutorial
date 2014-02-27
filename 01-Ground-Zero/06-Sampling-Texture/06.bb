@@ -6,8 +6,8 @@
 Up until now, we've only generated pretty rainbows out of our objects. Here you will learn the following.
 
 [b]*[/b] How to declare texture types.
-[b]*[/b] What is a sampler?
-[b]*[/b] How to use samplers
+[b]*[/b] What a sampler is.
+[b]*[/b] How to use samplers.
 
 
 
@@ -66,17 +66,17 @@ The sampler is used in the [b]pixel shader[/b] with the command [b]tex2D[/b], an
 Try modifying your pixel shader to look like the following:
 [code]PS_OUTPUT ps_main( PS_INPUT input )
 {
-        // declare output struct, so we can write output data
-        PS_OUTPUT output;
+	// declare output struct, so we can write output data
+	PS_OUTPUT output;
 
-        // sample a colour from the diffuse texture
+	// sample a colour from the diffuse texture
 	float4 diffuse = tex2D( sampDiffuse, input.texCoord );
 
 	// set output pixel to diffuse colour
 	output.colour = diffuse;
 
-        // output final colour
-        return output;
+	// output final colour
+	return output;
 }[/code]
 
 As you can see, the [b]tex2D[/b] command helps pass the UV coordinate to our sampler [b]sampDiffuse[/b]. This causes it to look at the texture its referencing and sample a colour value from it, at the exact location the UV coordinates specify. The result is saved in [b]diffuse[/b].
