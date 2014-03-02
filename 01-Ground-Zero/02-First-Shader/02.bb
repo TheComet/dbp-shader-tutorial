@@ -13,7 +13,7 @@ You will learn the following in this chapter.
 
 [b]Getting used to the syntax[/b]
 
-HLSL is an abbreviation for "High Level Shader Language", developed by Microsoft for DirectX. It has what I like to call a "simple C-like syntax". There are no pointers or anything fancy, making it a very simple language to pick up.
+HLSL is an abbreviation for "High Level Shader Language", developed by Microsoft for DirectX. It has what I like to call a "simple C-like syntax". There is no support for pointers or anything fancy, making it a very simple language to pick up.
 
 Just like DBP has its fundamental data types, so does HLSL.
 
@@ -61,7 +61,9 @@ Sometimes, you might want to assign a float3 to a float4. This can be done by us
 [code]float3 test1 = {1.0f, 1.0f, 1.0f};
 
 // using a constructor
-float4 anotherThing = float4( test1, 1.0f); // this assigns the x, y, and z components of "test" to the x, y, and z components of "anotherThing", and sets the w component of "anotherThing" to 1.0f[/code]
+float4 anotherThing = float4( test1, 1.0f); // this assigns the x, y, and z components of "test" to
+                                            // the x, y, and z components of "anotherThing", and sets
+                                            // the w component of "anotherThing" to 1.0f[/code]
 
 One last special, and very handy feature of HLSL syntax is the ability to use multiple components via dot notation:
 [code]float3 test1 = {1.0f, 1.0f, 1.0f};
@@ -74,7 +76,13 @@ Note that it's also possible to write the components in any order, i.e. [b]test1
 
 [b]The structure of a shader[/b]
 
-So let's examine the [b]bare minimum[/b] required to write a functioning shader.
+So let's examine the [b]bare minimum[/b] required to write a functioning shader. For this, example files have been included. If you haven't downloaded them yet, I urge you to do so [href=]here[/href].
+
+Go into the folder [b]01-simple-shader[/b], open the DBPro project and compile and run the program. You should get something like the following:
+
+[img]simple-shader.png[/img]
+
+Go ahead and open the file [b]simple-shader.fx[/b] with a text editor.
 
 At the very top of your shader are various [b]shader constants[/b]. Some of these are user-defined, and can be set through DBP by using the commands [b]set effect constant float[/b] or [b]set effect constant vector[/b]. Others gain their values from what's known as [b]semantics[/b].
 
