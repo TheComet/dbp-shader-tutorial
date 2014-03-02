@@ -112,7 +112,7 @@ do
 rem end of main loop
 loop[/code]
 
-The results can be quite funny. The followingn shows the same model with different fatness factors:
+The results can be quite funny. The following shows the same model with different fatness factors:
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/fatness_zps8b1a6c77.png[/img]
 
