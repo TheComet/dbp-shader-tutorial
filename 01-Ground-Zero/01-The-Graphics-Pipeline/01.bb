@@ -9,8 +9,6 @@ You will learn the following in this chapter.
 [b]*[/b] What parts of it we can programmatically manipulate through shader programs.
 [b]*[/b] When it makes sense to use the GPU and when it makes sense to use the CPU.
 
-You may feel the need to skip this chapter, but I advise you not to. It contains some fundamental information that is later built upon.
-
 
 
 [b]What is a grahics card?[/b]
@@ -21,38 +19,44 @@ Unlike a CPU, the architecture of a GPU is highly parallelised. A single GPU con
 
 You may ask yourself: Why hasn't the CPU been replaced by a GPU yet? The GPU is obviously over a million times faster. The answer is quite simple: Some mathematical problems cannot be solved in parallel efficiently, while some can. The CPU is designed to solve sequential problems, while the GPU is designed to solve parallel problems.
 
-For example, think about the code you wrote in your latest project. Each command you typed in needs to be processed sequentially. It wouldn't make sense for your enemy to search for a path and at the same time try to follow the path, because the path data hasn't finished calculating yet. The path needs to first exist before the enemy can follow it: It's a sequential problem.
+For example, think about the code you wrote in your latest project. Each command you typed in needs to be processed sequentially. One after another. It wouldn't make sense to try and texture an object that hasn't been loaded yet. It wouldn't make sense to try and render an object when you haven't even opened the window yet. It wouldn't make sense for your enemy to search for a path and at the same time try to follow the path, because the path data hasn't finished calculating yet. The path needs to first exist before the enemy can follow it.
 
-It's hard to parallelise a system that needs to know about other parts of itself, like a pathfinder.
+There are many things in a program that [i]have[/i] to happen in a particular order, and there's really no way around this.
 
-But lets say your game has thousands of bullets that need to be simulated at the same time, because you're writing the next MMOFPS. It's possible to update the position of each bullet in parallel, because they don't need to know about each other. Of course, you'd still have to make sure you check for collision [i]after[/i] all of the bullets have been updated, because again, it doesn't make sense to check for collision at the same time you're updating the bullets, because it's possible that some were update while the others aren't yet.
+[img]sequential block diagram[/img]
 
-And this is what the GPU is good at. If you have a problem that can be split up into independent sections that don't need to know about each other, then your problem will be far more efficiently solved on the GPU than on the CPU.
+There are some things that [i]can[/i] be parallelised, though. Lets say your game has thousands of bullets that need to be simulated at the same time, because you're writing the next MMOFPS. The bullets don't have to know about each other, all they have to do is travel a certain distance every loop. This makes it possible to update the position of each bullet in parallel, because they are all completely independent of each other.
 
-That's where drawing objects comes in. Rendering graphics is parallelisable.
+[img]parallel block diagram[/img]
+
+Of course, you'd still have to make sure you check for collision [i]after[/i] all of the bullets have been updated, because again, it doesn't make sense to check for collision at the same time you're updating the bullets, because it's possible that some were update while the others aren't yet. So when looking at it from a higher level, you begin to notice that programs are really just a mixture of parallel problems that have to happen in sequence.
+
+[img]parallel&sequential block diagram[/img]
+
+With that said, it still wouldn't make sense to calculate the bullts on a GPU. It costs [b]a lot[/b] of time to communicate to the GPU, so even though the GPU could potentially simulate a thousand bullets instantaniously, the time it takes to upload all of the data to the GPU, let it calculate its stuff, and download the results again would take longer than simply doing it directly on the CPU.
+
+We need millions of tasks before it makes sense to use the GPU. That's where drawing objects comes in, because rendering graphics is highly parallelisable.
 
 
 
 [b]A Journey Of A 3D Object To The Screen[/b]
 
-There are a number of sequential operations required to get an object from memory to the screen. Here, we will examine how this exactly works.
+There are a number of sequential operations required to get an object from memory to the screen. Here, we will examine how that exactly works.
 
 I want you to meet, for a lack of a better name, Bob. He is the cutest cube ever created, and was just loaded into memory using the following code.
-
 [code lang=dbp]load object "bob.x", 1[/code]
 
 [img]bob.png[/img]
 
-Well, at least that's what he [i]should[/i] look like, but the RAM isn't concerned with that. All it cares about are the [b]vertices[/b] and their [b]attributes[/b], along with maybe a [b]texture[/b] lying around somewhere in video memory (if at all).
+Well, at least that's what he [i]should[/i] look like, but the VRAM isn't concerned with that. All it cares about are the [b]vertices[/b] and their [b]attributes[/b], along with maybe a [b]texture[/b] lying around somewhere in video memory (if at all).
 
 [img]ram-01.png[/img]
 
-In RAM, the object is nothing more than 36 vertices (on an unoptimised object consisting of independent triangles). They aren't even connected with each other, all they have are certain attributes. One such attribute is the [b]position[/b], which is stored as 3 floating point values and tells us where the vertex is located in [b]object space[/b]. Other attributes are the vertex [b]normal[/b], [b]diffuse[/b], and [b]UV coordinates[/b]. These, however, are all optional, and are defined using the object's flexible vertex format (FVF).
+In VRAM, the object is nothing more than 36 vertices (on an unoptimised object consisting of independent triangles). They aren't even connected with each other, all they have are certain attributes. One such attribute is the [b]position[/b], which is stored as 3 floating point values and tells us where the vertex is located in [b]object space[/b]. Other attributes are the vertex [b]normal[/b], [b]diffuse[/b], and [b]UV coordinates[/b]. These, however, are all optional, and are defined using the object's [b]Flexible Vertex Format (FVF)[/b].
 
 [img]ram-02.png[/img]
 
-You can try this right now if you like. DBP provides you with some tools to edit these vertices after loading an object. Here's an example demonstrating just that:
-
+You can try this right now if you like. DBP provides you with some tools to access and even edit these vertices after loading an object. Here's an example demonstrating just that:
 [code lang=dbp]rem setup screen
 sync on
 sync rate 60
@@ -79,15 +83,15 @@ do
 	sync
 loop[/code]
 
-When running the above program, you will notice the Flexible Vertex Format (FVF) will have a value of 274. This number basically means that each vertex has the attributes [b]position[/b], [b]normal[/b], and [b]UV coordinate[/b]. I won't go into more detail on FVF since it's not important yet, but you can check out [href=http://forum.thegamecreators.com/?m=forum_view&t=191434&b=1]this link[/href] if want to know more.
+When running the above program, you will notice the Flexible Vertex Format (FVF) will have a value of 274. This number tells us what attributes are being used, and basically means that each vertex has the attributes [b]position[/b], [b]normal[/b], and [b]UV coordinate[/b]. I won't go into more detail on FVF since it's not important yet, but you can check out [href=http://forum.thegamecreators.com/?m=forum_view&t=191434&b=1]this link[/href] if want to know more.
 
-Since the position attribute requires 3 floats, the normal attribute requires 3 floats, and the UV coordinates require 2 floats, the total memory size of a single vertex amounts to 28 bytes. This will be the value of [b]vertSize[/b].
+Since the position attribute requires 3 floats, the normal attribute requires 3 floats, and the UV coordinates require 2 floats, and each float consists of 4 bytes, the total memory size of a single vertex amounts to 28 bytes. This will be the value of [b]vertSize[/b].
 
-Lastly, [b]vertCount[/b] tells us the total amount of vertices stored in memory.
+Lastly, [b]vertCount[/b] tells us the total amount of vertices that are composing the object.
 
-When it's time for an object to be drawn, all of its vertices and its attributes are uploaded to the GPU, and passed to the [b]vertex shader[/b]. At this point, bob is still just a bunch of points. Very important: Bob is located in [b]object space[/b] at this point in time.
+When it's time for an object to be drawn, all of its vertices and its attributes are passed to the [b]vertex shader[/b]. At this point, bob is still just a bunch of points.
 
-The first thing that happens is the GPU will transform all of the vertices into [b]world space[/b]. This effectively places bob into the 3D world at the position he should be, which is determined by the DBP commands [b]position object[/b], [b]rotate object[/b], and [b]scale object[/b]. Those three commands generate what's known as the [b]world matrix[/b], which is also uploaded so the GPU knows how to transform bob into world space.
+The first thing that happens is the GPU will transform all of the vertices into [b]world space[/b]. This effectively places bob into the 3D world at the position the programmed placed him, which is determined by the DBP commands [b]position object[/b], [b]rotate object[/b], and [b]scale object[/b]. Those three commands generate what's known as the [b]world matrix[/b], which is also uploaded so the GPU knows how to transform bob into world space.
 
 In other words, the vertices in RAM never change. Even when you position the object, rotate the object, etc. you aren't actually moving the vertices. You're only telling the GPU how to draw the object. And if you think about it, that's a good thing, because if you were to actually change the vertices in RAM, the model would begin to distort the more you reposition it, because floating point values have a certain inaccuracy.
 
@@ -101,9 +105,7 @@ The GPU now does another transformation on all of Bob's vertices, placing him in
 
 [img]bob-projection.png[/img]
 
-The GPU will do some [b]clipping[/b], discarding any primitives that fall completely outside of the camera's view frustum. This is an optimisation so the pixel shader doesn't have to do as much work.
-
-At this point, the vertex shader has done its job. It outputs the new positions of all of the vertices, and the GPU [b]rasterises[/b] the vertices. Here the vertices are finally [b]connected together[/b] to form actual shapes, and the correct resulting pixel values are determined.
+At this point, the vertex shader has done its job. It outputs the new positions of all of the vertices, and the GPU will do some [b]clipping[/b], discarding any primitives that fall completely outside of the camera's view frustum. This is an optimisation so the pixel shader doesn't have to do as much work. Then the GPU [b]rasterises[/b] the vertices. Here the vertices are finally [b]connected together[/b] to form actual shapes, and the correct resulting pixel values are determined.
 
 [img]bob-rasterise.png[/img]
 
@@ -113,13 +115,15 @@ These pixels are passed to the [b]pixel shader[/b].
 
 The pixel shader will go through every pixel and try to determine the final colour. This can include sampling from a [b]texture[/b] by using the UV coordinates, or simply generating a colour on the fly.
 
-The pixel shader outputs the pixels to a [b]render target[/b], which is a buffer located in video memory. After that, the render target can be directly output to the screen, or can be used again in another [b]pass[/b].
+The pixel shader outputs the pixels to a [b]render target[/b], which is a buffer located in video memory. After that, the render target can be directly output to the screen, or can be used again in another [b]render pass[/b].
 
 And thus, Bob has made it to the screen!
 
 [img]bob.png[/img]
 
 As a DBP programmer, you have the ability to write your own [b]vertex shader[/b] programs, which changes how vertices are transformed, and you have the ability to write your own [b]pixel shader[/b] programs, which changes how pixels gain their final colour.
+
+There are hundreds of thousands of vertices and billions of pixels in 3D games. A CPU just would not be able to handle it.
 
 
 
