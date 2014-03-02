@@ -7,3 +7,6 @@
 
 # executables
 *.exe
+
+# temp sources
+_Temp.dbsource
