@@ -78,11 +78,11 @@ Note that it's also possible to write the components in any order, i.e. [b]test1
 
 So let's examine the [b]bare minimum[/b] required to write a functioning shader. For this, example files have been included. If you haven't downloaded them yet, I urge you to do so [href=]here[/href].
 
-Go into the folder [b]01-simple-shader[/b], open the DBPro project and compile and run the program. You should get something like the following:
+Go into the folder [b]02-simple-shader[/b], open the DBPro project and compile and run the program. You should get something like the following:
 
-[img]simple-shader.png[/img]
+[img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/01-simple-shader_zps86dad6fe.png[/img]
 
-Go ahead and open the file [b]simple-shader.fx[/b] with a text editor.
+Go ahead and open the file [b]simple-shader.fx[/b] with a text editor. I prefer using [href=http://notepad-plus-plus.org/]Notepad++[/href], with the [href=http://www.enchantedage.com/node/97]HLSL syntax highlighting plugin[/href].
 
 At the very top of your shader are various [b]shader constants[/b]. Some of these are user-defined, and can be set through DBP by using the commands [b]set effect constant float[/b] or [b]set effect constant vector[/b]. Others gain their values from what's known as [b]semantics[/b].
 
@@ -91,7 +91,7 @@ In Tutorial 01, we discussed how the vertex shader transformed Bob into world sp
 [code]// shader semantics
 float4x4 matWorldViewProjection : WORLDVIEWPROJECTION;[/code]
 
-As the name implies, the world, view, and projection matrices have all been multiplied together to form a single matrix, unsurprisingly called the [b]world view projection matrix[/b]. If you multiply a vertex by this matrix, you transform it from [b]object space[/b] directly into [b]projection space[/b].
+As the name implies, the world, view, and projection matrices have all been multiplied together to form a single matrix, unsurprisingly called the [b]world view projection matrix[/b]. If you multiply a vertex by this matrix, you transform it from [b]object space[/b] directly into [b]projection space[/b], skipping all intermediate projections.
 
 By writing the code above, the variable [b]matWorldViewProjection[/b] will automatically be assigned the world view projection matrix, because [b]WORLDVIEWPROJECTION[/b] is the semantic for said matrix.
 
@@ -110,22 +110,17 @@ As you can see, we're using the pre-defined semantic [b]POSITION0[/b], which aut
 From our vertex shader, we'll want to output the new position of the vertex after transforming it. Again, we'll make a struct for handling that:
 [code]struct VS_OUTPUT
 {
-	float4 position : POSITION;
+	float4 position : POSITION0;
 };[/code]
 
-As you can see, we're using the pre-defined semantic [b]POSITION[/b], which automatically assignes the position attribute of the current vertex being processed.
+As you can see, we're using the pre-defined semantic [b]POSITION0[/b], which automatically assigns the position attribute of the current vertex being processed.
 
-NOTE: If you were paying attention, you'll notice one of the semantics had a leading "0", while the other did not. A vertex has various [b]stages[/b]. The position of the vertex is written to stage 0 of the object. Theoretically it is possible to have a vertex with multiple positions, but frankly, that's retarded, so we only read from stage 0.
-
-The output POSITION doesn't require stages, hence why there is no number.
+You'll notice the semantics have a leading "0". A vertex has various [b]stages[/b]. The position of the vertex is written to stage 0 of the object. Theoretically it is possible to have a vertex with multiple positions, but frankly, that's retarded, so we only read from stage 0.
 
 Next, the input of the pixel shader program. Since this is the simplest of shaders, there is nothing to input, so we'll just leave it blank:
 [code]struct PS_INPUT
 {
-	bool dummy;
 };[/code]
-
-(The dummy is there so it compiles. If you truly don't need any input data for your pixel shader, then you should remove the struct entirely. This is for demonstrating purposes only).
 
 Last but not least, we need to define the output values of the pixel shader program. In almost all cases, the only thing you'll ever want to output is the final colour.
 [code]struct PS_OUTPUT
@@ -133,7 +128,7 @@ Last but not least, we need to define the output values of the pixel shader prog
 	float4 colour : COLOR;
 };[/code]
 
-Again, note the use of the [b]COLOR[/b] semantic, which assigns the colour attribute of the render target to the variable [b]colour[/b].
+Again, note the use of the [b]COLOR[/b] semantic, which assigns the output colour attribute of the render target to the variable [b]colour[/b].
 
 Now it's time to write the vertex shader program. Here it is.
 [code]VS_OUTPUT vs_main( VS_INPUT input )
@@ -148,7 +143,7 @@ Now it's time to write the vertex shader program. Here it is.
 	return output;
 }[/code]
 
-This little section of code is where all of our vertex manipulation happens. In our case, we transform all vertices into projection space, as discussed in Tutorial 01.
+This little section of code is where all of our vertex manipulation happens. In our case, we transform all vertices into projection space, as discussed in Tutorial 01, by multiplying each vertex by the world view projection matrix.
 
 [b]Very important to understand:[/b] The vertex shader is [b]executed once for every vertex of the object[/b]. This means that if your object has 36 vertices, [b]vs_main[/b] is called 36 times, and every time it's called, the variable [b]input.position[/b] contains the position of the next vertex. You may have guessed it: Yes, all 36 instances of vs_main are executed in parallel, one on each core of the GPU. Since the GPU has thousands of cores, even an object with tens of thousands of vertices will only take a fraction of a microsecond to compute.
 
@@ -199,7 +194,7 @@ Here is the entire shader from above:
 // Projection matrices
 // ----------------------------------------------------------------------------
 
-float 4x4 matWorldViewProjection : WORLDVIEWPROJECTION;
+float4x4 matWorldViewProjection : WORLDVIEWPROJECTION;
 
 // ----------------------------------------------------------------------------
 // Input and output structs
@@ -212,12 +207,11 @@ struct VS_INPUT
 
 struct VS_OUTPUT
 {
-	float4 position : POSITION;
+	float4 position : POSITION0;
 };
 
 struct PS_INPUT
 {
-	bool dummy;
 };
 
 struct PS_OUTPUT
@@ -234,7 +228,9 @@ VS_OUTPUT vs_main( VS_INPUT input )
 	// declare output struct, so we can write output data
 	VS_OUTPUT output;
 
-	// take each position attribute of the incoming vertex and transform it into projection space
+	// take each position attribute of the incoming vertex and transform it into 
+
+projection space
 	output.position = mul( input.position, matWorldViewProjection );
 
 	// return output data
@@ -274,7 +270,7 @@ technique Default
 
 [b]Links[/b]
 
-Proceed to the next tutorial here.
+Proceed to the next tutorial: [href=]03 - Vertex Shader Coordinate System[/href]
+Proceed to the previous tutorial here: [href=]01 - Understanding The Graphics Pipeline[/href]
 
 TheComet
-

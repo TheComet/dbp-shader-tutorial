@@ -56,7 +56,7 @@ In VRAM, the object is nothing more than 36 vertices (on an unoptimised object c
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/ram-02_zps1dd18a4b.png[/img]
 
-You can try this right now if you like. DBP provides you with some tools to access and even edit these vertices after loading an object. The following is an example demonstrating just that. This example is located in the folder [b]02-fvf-format[/b]
+You can try this right now if you like. DBP provides you with some tools to access and even edit these vertices after loading an object. The following is an example demonstrating just that. This example is located in the folder [b]01-fvf-format[/b]
 [code lang=dbp]rem setup screen
 sync on
 sync rate 60
@@ -99,7 +99,7 @@ In other words, the vertices in RAM never change. Even when you position the obj
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/world-transform_zpsb1cac2d0.png[/img]
 
-Next, the GPU will transform all vertices into [b]view space[/b]. This effectively places bob relative to where the camera is located and pointing, which is determined by the DBP commands [b]position camera[/b], and [b]rotate camera[/b]. Those commands generate what's known as the [b]view matrix[/b], which is also uploaded so the GPU knows how to transform bob into view space.
+Next, the GPU will transform all vertices into [b]view space[/b]. This effectively places bob relative to where the camera is located and positioned and pointing, which is determined by the DBP commands [b]position camera[/b], and [b]rotate camera[/b]. Those commands generate what's known as the [b]view matrix[/b], which is also uploaded so the GPU knows how to transform bob into view space.
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/view-transform_zps59944859.png[/img]
 
@@ -152,7 +152,8 @@ There are hundreds of thousands of vertices and billions of pixels in 3D games. 
 
 [b]Links[/b]
 
-Proceed to the next tutorial here.
+Proceed to the next tutorial: [href=]02 - Writing Your First Shader[/href]
+Proceed to the previous tutorial here: [href=]Master Post[/href]
 
 TheComet
 

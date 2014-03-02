@@ -1,0 +1,25 @@
+rem setup screen
+sync on
+sync rate 60
+backdrop on
+hide mouse
+
+rem make bob
+make object cube 1, 10
+
+rem create memblock from bob and get the header information
+make mesh from object 1, 1
+make memblock from mesh 1, 1
+FVF = memblock dword(1, 0)
+vertSize = memblock dword(1, 4)
+vertCount = memblock dword(1, 8)
+
+do
+	set cursor 0, 0
+	print "Bob's specs:"
+	print "  FVF: " + str$(FVF)
+	print "  vertSize: " + str$(vertSize)
+	print "  vertCount: " + str$(vertCount)
+
+	sync
+loop

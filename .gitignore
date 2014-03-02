@@ -4,3 +4,6 @@
 
 # windows thumbnails
 *.db
+
+# executables
+*.exe
