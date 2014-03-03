@@ -27,7 +27,10 @@ if __name__ == '__main__':
 			in_file.close()
 
 		# simple tags to convert
-		simpletags = (('[b]', '<b>'),
+		simpletags = (
+			('<', '&lt;'),
+			('>', '&gt;'),
+			('[b]', '<b>'),
 			('[i]', '<i>'),
 			('\n', '<br>'),
 			('[/b]', '</b>'),
