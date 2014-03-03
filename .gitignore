@@ -2,3 +2,12 @@
 *.swp
 *.kate-swp
 *~
+
+# windows thumbnails
+*.db
+
+# executables
+*.exe
+
+# temp sources
+_Temp.dbsource

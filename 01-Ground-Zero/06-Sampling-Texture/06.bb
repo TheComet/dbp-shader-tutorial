@@ -21,7 +21,12 @@ In order to make use of a texture, two things need to be done.
 In DBP, if you use multiple texture stages, the [b]order in which you declare your textures[/b] is the order in which the stages are used.
 
 To declare a texture, we simply have to use the [b]texture[/b] datatype:
-[code]texture texDiffuse;[/code]
+[code]texture texDiffuse
+<
+	string ResourceName = "";
+>;[/code]
+
+An empty string for the resource name tells the shader compiler to use the resource name of the default texture.
 
 A convention I like to follow is to prefix everything with what it is. If you don't do this, things can get pretty confusing and messy further down the road. You may have already noticed the world projection matrix to have the prefix "mat" for "matrix". Here I use "tex" for "texture".
 
@@ -34,8 +39,14 @@ texture object 1, 0, 1 : rem foo.png is applied to stage 0
 texture object 1, 1, 2 : rem bar.png is applied to stage 1[/code]
 
 The following applies to declarations of textures in shaders:
-[code]texture texDiffuse; // texDiffuse references "foo.png"
-texture texNormal; // texNormal references "bar.png"[/code]
+[code]texture texDiffuse    // texDiffuse references "foo.png"
+<
+	string ResourceName = "";
+>;	
+texture texNormal     // texNormal references "bar.png"
+<
+	string ResourceName = "";
+>;[/code]
 
 
 
@@ -52,7 +63,7 @@ There are different types of samplers, and different ways to configure a sampler
 Here's how to declare the sampler:
 [code]sampler2D sampDiffuse = sampler_state
 {
-	Texture = <texDiffuse>;
+	Texture = <texDiffuse>;   // this is the name of the texture declared above
 };[/code]
 
 NOTE: It's possible to have multiple samplers sampling from the same texture. Usually you'll want to have one sampler for every texture declared.
@@ -83,7 +94,7 @@ As you can see, the [b]tex2D[/b] command helps pass the UV coordinate to our sam
 
 After that, the value is simply directly written to the screen through the output struct. You should now get something like the following:
 
-[img]result.png[/img]
+[img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/uv-coordinates_zps8c2579e9.png[/img]
 
 Important: Sampling textures is an [b]expensive[/b] process, and should be used sparingly.
 
@@ -96,11 +107,11 @@ Important: Sampling textures is an [b]expensive[/b] process, and should be used 
 [b]*[/b] Samplers interpolate the pixels of a texture, making it possible to access "in between" pixels of the texture.
 [b]*[/b] Samplers are expensive to use.
 
-Congratulations! You have successfully completed the beginner tutorial series, and have written one of the most basic shaders, which does what's known as "ambient shading".
+Congratulations! You have successfully completed the [i]ground zero[/i] tutorial series, and have written one of the most basic shaders, which does what's known as "ambient shading".
 
 The next series will introduce you to some fundamental lighting techniques to make your objects look a lot sweeter. Please do continue!
 
-
+Proceed to the previous tutorial here: [href=]05 - UV Coordinates[/href]
 
 [b]Links[/b]
 

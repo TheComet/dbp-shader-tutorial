@@ -12,11 +12,11 @@
 
 You may have heard of these "normals" here and there. A [b]surface normal[/b] is a [b]unit vector[/b], that is, a vector with the length of exactly 1, perpendicular to the surface.
 
-[img]surface normal.png[/img]
+[img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/Surface_normal_illustration_zpsdfb10361.png[/img]
 
-Since vertex shaders process vertices and not surfaces, each vertex is given a pre-calculated normal based on the surfaces it connects. This new normal is called the [b]vertex normal[/b], and can be accessed via the semantic [b]NORMAL0[/b].
+Since vertex shaders process vertices and not surfaces, each vertex is given a pre-calculated normal based on the average of the surface normals surrounding it. This new normal is called the [b]vertex normal[/b], and can be accessed via the semantic [b]NORMAL0[/b].
 
-[img]vertex normal.png[/img]
+[img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/fig03_zps9971f11e.gif[/img]
 
 Normals allow you to do some cool lighting effects, but that's something for a later tutorial. For now, just know that they exist.
 
@@ -35,24 +35,24 @@ float fatness = 0.0f;[/code]
 We can gain access to the object's normals through the [b]NORMAL0[/b] semantic by adding this to the vertex shader input struct:
 [code]struct VS_INPUT
 {
-	position : POSITION0;
-	normal : NORMAL0;
+	float4 position : POSITION0;
+	float3 normal : NORMAL0;
 };[/code]
 
 And now change your vertex shader to the following:
 [code]VS_OUTPUT vs_main( VS_INPUT input )
 {
-        // declare output struct, so we can write output data
-        VS_OUTPUT output;
+	// declare output struct, so we can write output data
+	VS_OUTPUT output;
 
 	// change fatness
 	float4 fatPosition = input.position + (input.normal * fatness);
 
-        // transform new fat position into projection space
-        output.position = mul( fatPosition, matWorldViewProjection );
+	// transform new fat position into projection space
+	output.position = mul( fatPosition, matWorldViewProjection );
 
-        // return output data
-        return output;
+	// return output data
+	return output;
 }[/code]
 
 Then, in DBP, simply load and apply the shader to a more complex object:
@@ -60,18 +60,34 @@ Then, in DBP, simply load and apply the shader to a more complex object:
 sync on
 sync rate 60
 backdrop on
+color backdrop 0
 hide mouse
 
 rem load character
-load object "char.x", 1
+load object "character.x", 1
+xrotate object 1, 270
 
-rem load and apply fatness shader
+rem load shader
 load effect "fatness.fx", 1, 0
 set object effect 1, 1
 
-rem main loop
-do
+rem catch shader compilation errors
+perform checklist for effect errors
+if checklist quantity() > 0
+   do
+      set cursor 0, 0
+      print "shader errors have occurred!"
+      for n = 1 to checklist quantity()
+         print checklist string$(n)
+      next n
+      sync
+   loop
+endif
 
+rem main loop
+dist# = 50
+do
+	
 	rem change fatness factor with arrow keys
 	set cursor 0, 0
 	print "Use arrow keys to change fatness"
@@ -79,14 +95,26 @@ do
 	if downkey() then dec fatness#, 0.01
 	set effect constant float 1, "fatness", fatness#
 
-	rem simple camera control
-	angle# = wrapvalue( angle# + mousemovex() )
-	inc height#, mousemovey()
-	set camera to follow 0, 0, 0, angle#, 20, height#, 4, 0
-	point camera 0, 0, 0
+   rem control camera
+   angley# = wrapvalue(angley# + mousemovex()*0.5)
+   anglex# = wrapvalue(anglex# - mousemovey()*0.5)
+   inc dist#, mousemovez()*0.2
+   if anglex# > 180 and anglex# < 270 then anglex# = 270
+   if anglex# < 180 and anglex# > 90 then anglex# = 90
+   position camera 0, 0, 0
+   rotate camera anglex#, angley#, 0
+   move camera dist#
+   point camera 0, 0, 0
 
-	sync
+   rem refresh screen
+   sync
+
+rem end of main loop
 loop[/code]
+
+The results can be quite funny. The following shows the same model with different fatness factors:
+
+[img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/fatness_zps8b1a6c77.png[/img]
 
 As you can see, manipulating vertices with shaders is extremely easy and fast.
 
@@ -103,6 +131,7 @@ If you don't understand how this works, let me give you some help. [b]input.posi
 
 [b]Links[/b]
 
-Proceed to the next tutorial here.
+Proceed to the next tutorial: [href=]05 - UV Coordinates[/href]
+Proceed to the previous tutorial here: [href=]03 - Vertex Shader Coordinate System[/href]
 
 TheComet

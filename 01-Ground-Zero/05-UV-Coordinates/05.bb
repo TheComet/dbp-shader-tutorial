@@ -19,13 +19,13 @@ When texturing an object, we have to somehow remember how the texture was "wrapp
 
 In DBP, you usually work with [b]pixel coordinates[/b]. If you load a 256x256 image, you'd have to use the coordinates 128,128 to draw to the very middle of the image.
 
-GPUs don't do this because textures can have different resolutions. Instead, the GPU defines the [b]top left corner[/b] to be at [b]0.0, 0.0[/b], and the [b]bottom right corner[/b] to be at [b]1.0, 1.0[/b]. If you wanted to draw in the very middle of the image, you'd have to do it at [b]0.5, 0.5[/b], which is exactly half of [b]1.0, 1.0[/b].
+GPUs don't do this because textures can have varying resolutions. Instead, the GPU defines the [b]top left corner[/b] to be at [b]0.0, 0.0[/b], and the [b]bottom right corner[/b] to be at [b]1.0, 1.0[/b]. If you wanted to draw in the very middle of the image, you'd have to do it at [b]0.5, 0.5[/b], which is exactly half of [b]1.0, 1.0[/b].
 
-[img]plane with 0,0 -- 1,1 coordinates[/img]
+[img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/plane02_zps14c70627.png[/img]
 
 In order to texture a 3D object, it needs to be "unwrapped" so it becomes 2-dimensional. The following is an example with a sphere:
 
-[img]sphere uv unwrapping[/img]
+[img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/UVMapping_zps74d1d059.png[/img]
 
 This makes it easy to slap an image onto it.
 
@@ -39,7 +39,7 @@ Notice the "0" in "TEXCOORD0". You can apply more than one texture to the same o
 
 [b]Let's see some shader code![/b]
 
-Texture coordinates are a little special. They are an attribute of [b]vertices[/b], but they aren't used by the vertex shader. The pixel shader is what needs them. However, they need to be extracted by the vertex shader and passed on to the pixel shader, because only the vertex shader has access to vertices.
+Texture coordinates are a little special. They are an attribute of [b]vertices[/b], but they aren't used by the vertex shader. The pixel shader is what needs them. However, they still need to be extracted by the vertex shader and passed on to the pixel shader, because only the vertex shader has access to vertices.
 
 In order to do this, we modify the vertex shader input and output structs to include the new semantics:
 [code]struct VS_INPUT
@@ -59,6 +59,9 @@ Additionally, the pixel shader input struct also needs to read the information f
 {
 	float2 texCoord : TEXCOORD0;
 };[/code]
+
+With these structs, the data flows as follows:
+[b]vertex UV attribute[/b] -> [b]vertex shader[/b] -> [b]rasteriser[/b] -> [b]pixel shader[/b]
 
 Now, modify the vertex shader to read the texture coordinates from the vertices and output them for the pixel shader. This is as simple as copying the values from input to output:
 [code]VS_OUTPUT vs_main( VS_INPUT input )
@@ -93,7 +96,7 @@ Now the pixel shader has to make use of the new input values it can receive. Rig
 
 Run the code and you should get something like this:
 
-[img]image[/img]
+[img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/rainbows_zps49845a95.png[/img]
 
 
 
@@ -105,7 +108,7 @@ So why did that happen? Let's examine. What do we know?
 
 Good. And now you can probably guess that the colours on the GPU are [i]also[/i] defined between [b]0.0 and 1.0[/b] instead of 0 and 255 *gasp*. What a surprise!
 
-That's right. For the GPU, a value of [b]1,1,1[/b] is completely white, where [b]0.5,0.5,0.5[/b] is grey, and [b]1,0,0[/b] is red, etc.
+That's right. For the GPU, a value of [b]1, 1, 1[/b] is completely white, where [b]0.5, 0.5, 0.5[/b] is grey, and [b]1, 0, 0[/b] is red, etc.
 
 One small detail is that colours are also 4-dimensional. The last value defines the alpha channel, where 0 is totally transparent and 1 is totally opaque.
 
@@ -131,6 +134,7 @@ Since we mapped the UV coordinates directly to the colour, you can see that the 
 
 [b]Links[/b]
 
-Proceed to the next tutorial here.
+Proceed to the next tutorial: [href=]06 - Sampling a Texture[/href]
+Proceed to the previous tutorial here: [href=]04 - Vertex Normals[/href]
 
 TheComet

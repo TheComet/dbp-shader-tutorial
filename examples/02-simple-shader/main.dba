@@ -1,0 +1,47 @@
+rem setup screen
+sync on
+sync rate 60
+backdrop on
+color backdrop 0
+hide mouse
+
+rem create object
+make object cube 1, 10
+
+rem load shader
+load effect "simple-shader.fx", 1, 0
+set object effect 1, 1
+
+rem catch shader compilation errors
+perform checklist for effect errors
+if checklist quantity() > 0
+	do
+		set cursor 0, 0
+		print "shader errors have occurred!"
+		for n = 1 to checklist quantity()
+			print checklist string$(n)
+		next n
+		sync
+	loop
+endif
+
+rem main loop
+dist# = 50
+do
+	
+	rem control camera
+	angley# = wrapvalue(angley# + mousemovex()*0.5)
+	anglex# = wrapvalue(anglex# - mousemovey()*0.5)
+	inc dist#, mousemovez()*0.2
+	if anglex# > 180 and anglex# < 270 then anglex# = 270
+	if anglex# < 180 and anglex# > 90 then anglex# = 90
+	position camera 0, 0, 0
+	rotate camera anglex#, angley#, 0
+	move camera dist#
+	point camera 0, 0, 0
+	
+	rem refresh screen
+	sync
+	
+rem end of main loop
+loop

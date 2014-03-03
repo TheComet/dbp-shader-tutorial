@@ -5,7 +5,7 @@
 
 In tutorial 02 you wrote your very first shader from scratch, and have a basic understanding of how it works. You will learn the following in this chapter.
 
-[b]*[/b] Why do positions use 4-dimensional vectors and not 3-dimensional vectors?
+[b]*[/b] Why coordinates use 4-dimensional vectors and not 3-dimensional vectors
 
 
 
@@ -37,7 +37,7 @@ Not exactly, because this makes it possible to define points in infinity. For ex
 
 [code]float4 homogeneous = { 10.0f, 6.0f, 3.0f, 0.0f };{/code]
 
-Oh oh, we've set [b]w[/b] to 0.0. If you look back a bit on how to convert to Cartesian, you'll notice that we're dividing x, y, and z by 0. Believe it or not, this is actually a valid coordinate. It defines a point located infinitely away, but we're not using infinite numbers. This is how the GPU handles correct projections without causing undefined behaviour. How cool is that?
+Oh oh, we've set [b]w[/b] to 0.0. If you look back a bit on how to convert to Cartesian, you'll notice that we're dividing x, y, and z by 0. Believe it or not, this is actually a valid coordinate. It defines a point located infinitely away, and we're doing that without using infinite numbers. This is how the GPU handles correct projections without causing undefined behaviour.
 
 One experiment you can do to prove this is to add the following to your vertex shader:
 [code]VS_OUTPUT vs_main( VS_INPUT input )
@@ -57,7 +57,7 @@ One experiment you can do to prove this is to add the following to your vertex s
 
 So now, instead of dividing each component by 1.0, it will divide by 0.5. This will cause your object to scale to twice of its original size:
 
-[img]illustration[/img]
+[img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/homogeneous-coordinates_zps829e583e.png[/img]
 
 
 
@@ -69,6 +69,7 @@ So now, instead of dividing each component by 1.0, it will divide by 0.5. This w
 
 [b]Links[/b]
 
-Proceed to the next tutorial here.
+Proceed to the next tutorial: [href=]04 - Vertex Normals[/href]
+Proceed to the previous tutorial here: [href=]02 - Writing Your First Shader[/href]
 
 TheComet
