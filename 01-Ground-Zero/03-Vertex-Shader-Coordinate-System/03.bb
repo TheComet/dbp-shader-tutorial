@@ -39,7 +39,8 @@ Not exactly, because this makes it possible to define points in infinity. For ex
 
 Oh oh, we've set [b]w[/b] to 0.0. If you look back a bit on how to convert to Cartesian, you'll notice that we're dividing x, y, and z by 0. Believe it or not, this is actually a valid coordinate. It defines a point located infinitely away, and we're doing that without using infinite numbers. This is how the GPU handles correct projections without causing undefined behaviour.
 
-One experiment you can do to prove this is to add the following to your vertex shader:
+One experiment you can do to prove this is to add the following to your vertex shader. The example [b]03-homogeneous-coordinates[/b] demonstrates this behaviour. If you haven't downloaded the exmamples, you can do so [href=GGTODO]here[/href].
+Make sure to try and implement the stuff below in your [b]PLAYGROUND[/b] folder on your own!
 [code]VS_OUTPUT vs_main( VS_INPUT input )
 {
 	// declare output struct, so we can write output data
@@ -69,7 +70,7 @@ So now, instead of dividing each component by 1.0, it will divide by 0.5. This w
 
 [b]Links[/b]
 
-Proceed to the next tutorial: [href=]04 - Vertex Normals[/href]
-Proceed to the previous tutorial here: [href=]02 - Writing Your First Shader[/href]
+Proceed to the next tutorial: [href=GGTODO]04 - Vertex Normals[/href]
+Proceed to the previous tutorial here: [href=GGTODO]02 - Writing Your First Shader[/href]
 
 TheComet

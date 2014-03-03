@@ -15,7 +15,7 @@ You will learn the following in this chapter.
 
 A Graphics Processing Unit (GPU) is a specialised electronic circuit designed to rapidly manipulate and alter memory to accelerate the creation of images in a frame buffer intended for output to a display.
 
-Unlike a CPU, the architecture of a GPU is highly parallelised. A single GPU contains [i]thousands[/i] of cores, with the ability to reach a total processing power of multiple Tflop/s (10¹² floating point operations per second).
+Unlike a CPU, the architecture of a GPU is highly parallelised. A single GPU contains [i]thousands[/i] of cores, with the ability to reach a total processing power of multiple Tflop/s (10^12 floating point operations per second).
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/cuda-core_zpsc8ea9c8d.gif[/img]
 
@@ -58,7 +58,7 @@ In VRAM, the object is nothing more than 36 vertices (on an unoptimised object c
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/ram-02_zps1dd18a4b.png[/img]
 
-You can try this right now if you like. DBP provides you with some tools to access and even edit these vertices after loading an object. The following is an example demonstrating just that. This example is located in the folder [b]01-fvf-format[/b]
+You can try this right now if you like. DBP provides you with some tools to access and even edit these vertices after loading an object. The following is an example demonstrating just that. This example is located in the folder [b]01-fvf-format[/b] in the [href=GGTODO]examples[/href].
 [code lang=dbp]rem setup screen
 sync on
 sync rate 60
@@ -95,19 +95,23 @@ When it's time for an object to be drawn, all of its vertices and its attributes
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/object-space-vertices_zpsb1cac2d0.png[/img]
 
-The first thing that happens is the GPU will transform all of the vertices into [b]world space[/b]. This effectively places bob into the 3D world at the position the programmed placed him, which is determined by the DBP commands [b]position object[/b], [b]rotate object[/b], and [b]scale object[/b]. Those three commands generate what's known as the [b]world matrix[/b], which is also uploaded so the GPU knows how to transform bob into world space.
-
-In other words, the vertices in RAM never change. Even when you position the object, rotate the object, etc. you aren't actually moving the vertices. You're only telling the GPU how the object was transformed. And if you think about it, that's a good thing, because if you were to actually change the vertices in RAM, the model would begin to distort the more you reposition it, because floating point values have a certain inaccuracy.
+The first thing that happens is the GPU will transform all of the vertices into [b]world space[/b]. This effectively places bob into the 3D world at the position the programmer placed him, which is determined by the DBP commands [b]position object[/b], [b]rotate object[/b], and [b]scale object[/b]. Those three commands generate what's known as the [b]world matrix[/b], which is also uploaded so the GPU knows how to transform bob into world space.
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/world-transform_zpsb1cac2d0.png[/img]
+
+In other words, the vertices in VRAM never change. Even when you position the object, rotate the object, etc. you aren't actually moving the vertices. You're only telling the GPU how the object was transformed. And if you think about it, that's a good thing, because if you were to actually change the vertices in VRAM, the model would begin to distort the more you reposition it, because floating point values have a certain inaccuracy.
 
 Next, the GPU will transform all vertices into [b]view space[/b]. This effectively places bob relative to where the camera is located and positioned and pointing, which is determined by the DBP commands [b]position camera[/b], and [b]rotate camera[/b]. Those commands generate what's known as the [b]view matrix[/b], which is also uploaded so the GPU knows how to transform bob into view space.
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/view-transform_zps59944859.png[/img]
 
+When in this space, the position [b]0, 0, 0[/b] is exactly where the camera is, because the object now uses a coordinate system relative to how the camera is positioned and rotated.
+
 The GPU now does another transformation on all of Bob's vertices, placing him into [b]projection space[/b]. This effectively places bob into the projection space of the camera, and has the effect of scaling Bob according to how far or how close he is to the camera (in the case of a perspective projection).
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/projection-transform_zpsf8ac0d6e.png[/img]
+
+You can think of projection space as being the computer screen, but with a depth buffer.
 
 Here's the entire process of the vertex shader, again:
 
@@ -117,7 +121,7 @@ At this point, the vertex shader has done its job. It outputs the new positions 
 
 Then the GPU [b]rasterises[/b] the vertices. Here the vertices are finally [b]connected together[/b] to form actual shapes, and the correct resulting pixel values are determined.
 
-This is accomplished by sampling the 3D surfaces from the perspective of a grid, where the grid has the exact dimensions of the render target:
+This is accomplished by sampling the 3D surfaces with a grid (a [i]raster[/i]), where the grid has the exact dimensions of the render target:
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/rasterise-1_zps7b5f3b94.png[/img]
 
@@ -154,8 +158,8 @@ There are hundreds of thousands of vertices and billions of pixels in 3D games. 
 
 [b]Links[/b]
 
-Proceed to the next tutorial: [href=]02 - Writing Your First Shader[/href]
-Proceed to the previous tutorial here: [href=]Master Post[/href]
+Proceed to the next tutorial: [href=GGTODO]02 - Writing Your First Shader[/href]
+Proceed to the previous tutorial here: [href=GGTODO]Master Post[/href]
 
 TheComet
 

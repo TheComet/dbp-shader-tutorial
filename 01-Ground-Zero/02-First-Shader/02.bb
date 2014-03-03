@@ -76,7 +76,7 @@ Note that it's also possible to write the components in any order, i.e. [b]test1
 
 [b]The structure of a shader[/b]
 
-So let's examine the [b]bare minimum[/b] required to write a functioning shader. For this, example files have been included. If you haven't downloaded them yet, I urge you to do so [href=]here[/href].
+So let's examine the [b]bare minimum[/b] required to write a functioning shader. For this, example files have been included. If you haven't downloaded them yet, I urge you to do so [href=GGTODO]here[/href].
 
 Go into the folder [b]02-simple-shader[/b], open the DBPro project and compile and run the program. You should get something like the following:
 
@@ -88,12 +88,16 @@ At the very top of your shader are various [b]shader constants[/b]. Some of thes
 
 In Tutorial 01, we discussed how the vertex shader transformed Bob into world space, then into view space, then into projection space by using matrices. There are a bunch of pre-defined semantics for accessing these matrices, one of them being the following:
 
+Make sure to try and implement the stuff below in your [b]PLAYGROUND[/b] folder on your own, so you really understand how it works.
+
 [code]// shader semantics
 float4x4 matWorldViewProjection : WORLDVIEWPROJECTION;[/code]
 
 As the name implies, the world, view, and projection matrices have all been multiplied together to form a single matrix, unsurprisingly called the [b]world view projection matrix[/b]. If you multiply a vertex by this matrix, you transform it from [b]object space[/b] directly into [b]projection space[/b], skipping all intermediate projections.
 
 By writing the code above, the variable [b]matWorldViewProjection[/b] will automatically be assigned the world view projection matrix, because [b]WORLDVIEWPROJECTION[/b] is the semantic for said matrix.
+
+For a complete list of semantics, you can look at the official MSDN documentation [href=http://msdn.microsoft.com/en-us/library/windows/desktop/bb509647(v=vs.85).aspx]here[/href].
 
 The next thing we need is to consider the data going in and out of the vertex and pixel shader programs.
 
@@ -270,7 +274,7 @@ technique Default
 
 [b]Links[/b]
 
-Proceed to the next tutorial: [href=]03 - Vertex Shader Coordinate System[/href]
-Proceed to the previous tutorial here: [href=]01 - Understanding The Graphics Pipeline[/href]
+Proceed to the next tutorial: [href=GGTODO]03 - Vertex Shader Coordinate System[/href]
+Proceed to the previous tutorial here: [href=GGTODO]01 - Understanding The Graphics Pipeline[/href]
 
 TheComet

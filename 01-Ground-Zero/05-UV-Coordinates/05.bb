@@ -39,6 +39,9 @@ Notice the "0" in "TEXCOORD0". You can apply more than one texture to the same o
 
 [b]Let's see some shader code![/b]
 
+Go ahead and open the folder [b]05-uv-coordinates-and-rainbows[/b]. If you haven't downloaded the examples yet, do so [href=GGTODO]here[/href].
+Make sure to try and implement the stuff below in your [b]PLAYGROUND[/b] folder on your own!
+
 Texture coordinates are a little special. They are an attribute of [b]vertices[/b], but they aren't used by the vertex shader. The pixel shader is what needs them. However, they still need to be extracted by the vertex shader and passed on to the pixel shader, because only the vertex shader has access to vertices.
 
 In order to do this, we modify the vertex shader input and output structs to include the new semantics:
@@ -110,6 +113,12 @@ Good. And now you can probably guess that the colours on the GPU are [i]also[/i]
 
 That's right. For the GPU, a value of [b]1, 1, 1[/b] is completely white, where [b]0.5, 0.5, 0.5[/b] is grey, and [b]1, 0, 0[/b] is red, etc.
 
+In the example, we map the x,y of the UV coordinates directly to the r and g colour values.
+
+Since the top-left corner of the cube is located at UV coordinates 0,0, this will tell the GPU to colour it (0,0,1), so blue. The bottom-right corner is located at UV coordinates 1,1, which tells the GPU to colour it (1,1,1), making it white. We can see that for all of the pixels in between the vertices, it [b]interpolates[/b] the UV coordinates, resulting in nice, smooth gradients.
+
+This proves that all values the pixel shader reads in from the vertex shader are smoothly interpolated between one another.
+
 One small detail is that colours are also 4-dimensional. The last value defines the alpha channel, where 0 is totally transparent and 1 is totally opaque.
 
 And just like with coordinates, each component can also be accessed via dot notation:
@@ -118,8 +127,6 @@ And just like with coordinates, each component can also be accessed via dot nota
 colour.rgba[/b]
 
 Where r is red, g is green, b is blue, and a is alpha.
-
-Since we mapped the UV coordinates directly to the colour, you can see that the GPU [b]interpolates[/b] the UV coordinates between each vertex during rasterisation, to find an intermediate texture coordinate for the current pixel. That's why the colours have such smooth gradients.
 
 
 
@@ -134,7 +141,7 @@ Since we mapped the UV coordinates directly to the colour, you can see that the 
 
 [b]Links[/b]
 
-Proceed to the next tutorial: [href=]06 - Sampling a Texture[/href]
-Proceed to the previous tutorial here: [href=]04 - Vertex Normals[/href]
+Proceed to the next tutorial: [href=GGTODO]06 - Sampling a Texture[/href]
+Proceed to the previous tutorial here: [href=GGTODO]04 - Vertex Normals[/href]
 
 TheComet

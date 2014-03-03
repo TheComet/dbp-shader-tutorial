@@ -19,6 +19,8 @@ You will need a DBP compiler. DarkShader is a nice-to-have, but it's not necessa
 
 In order to benefit the most from these series, [href=GGTODO]download the examples[/href], and try to understand them as you read the tutorials. Also feel free to do your own experiments! There's no better way to learn than by doing.
 
+Do your experiments in the folder [b]PLAYGROUND[/b] in the examples you downloaded. It contains a basic shader program loaded by DBP, and is intended to be used for all of your testing/experimenting. This way, you aren't changing the examples, 
+
 
 
 [b]Tutorial Content[/b]

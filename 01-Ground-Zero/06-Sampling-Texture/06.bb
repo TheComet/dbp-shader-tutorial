@@ -13,6 +13,9 @@ Up until now, we've only generated pretty rainbows out of our objects. Here you 
 
 [b]Declaring texture types[/b]
 
+This tutorial is demonstrated in the example [b]06-ambient-shader[/b]. If you haven't downloaded the examples, you can do so [href=GGTODO]here[/href].
+Make sure to try and implement the stuff below in your [b]PLAYGROUND[/b] folder on your own!
+
 In order to make use of a texture, two things need to be done.
 
 1) The shader needs to know it exists.
@@ -111,11 +114,10 @@ Congratulations! You have successfully completed the [i]ground zero[/i] tutorial
 
 The next series will introduce you to some fundamental lighting techniques to make your objects look a lot sweeter. Please do continue!
 
-Proceed to the previous tutorial here: [href=]05 - UV Coordinates[/href]
-
 [b]Links[/b]
 
-Proceed to the next tutorial here.
+Proceed to the next tutorial here (WIP, not yet released).
+Proceed to the previous tutorial here: [href=GGTODO]05 - UV Coordinates[/href]
 
 TheComet
 

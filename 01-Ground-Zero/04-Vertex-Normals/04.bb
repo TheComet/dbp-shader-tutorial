@@ -12,7 +12,9 @@
 
 You may have heard of these "normals" here and there. A [b]surface normal[/b] is a [b]unit vector[/b], that is, a vector with the length of exactly 1, perpendicular to the surface.
 
-[img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/Surface_normal_illustration_zpsdfb10361.png[/img]
+[img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/Surface_normal_illustration_zps37178219.png[/img]
+
+The vector tells us the surface angle of the object by pointing directly away from the surface.
 
 Since vertex shaders process vertices and not surfaces, each vertex is given a pre-calculated normal based on the average of the surface normals surrounding it. This new normal is called the [b]vertex normal[/b], and can be accessed via the semantic [b]NORMAL0[/b].
 
@@ -23,6 +25,9 @@ Normals allow you to do some cool lighting effects, but that's something for a l
 
 
 [b]How can I have fun with normals?[/b]
+
+Open the example [b]04-making-models-fat[/b]. If you haven't downloaded the examples, please do so [href=GGTODO]here[/href].
+Make sure to try and implement the stuff below in your [b]PLAYGROUND[/b] folder on your own!
 
 One cool thing you can do with vertex normals is use them to evenly change the surface area of an object. That is, you can make your character fatter/thinner.
 
@@ -120,6 +125,8 @@ As you can see, manipulating vertices with shaders is extremely easy and fast.
 
 If you don't understand how this works, let me give you some help. [b]input.position[/b] is the location of the current vertex. We also have access to a directional vector, the [b]vertex normal[/b], which tells us which direction is "away" from the object (perpendicular). If we multiply [b]fatness[/b] with [b]input.normal[/b], all we do is we change the length of the normal vector. By adding [b]input.position[/b] and [b]input.normal*fatness[/b] together, we're moving the vertex "away" from the object by exactly the distance [b]fatness[/b] specifies.
 
+By doing this to every vertex, the skin of the model can be shrunk or grown.
+
 
 
 [b]Summary[/b]
@@ -131,7 +138,7 @@ If you don't understand how this works, let me give you some help. [b]input.posi
 
 [b]Links[/b]
 
-Proceed to the next tutorial: [href=]05 - UV Coordinates[/href]
-Proceed to the previous tutorial here: [href=]03 - Vertex Shader Coordinate System[/href]
+Proceed to the next tutorial: [href=GGTODO]05 - UV Coordinates[/href]
+Proceed to the previous tutorial here: [href=GGTODO]03 - Vertex Shader Coordinate System[/href]
 
 TheComet
