@@ -46,7 +46,7 @@ In order to do this, we modify the vertex shader input and output structs to inc
 {
 	float4 position : POSITION0;
 	float2 texCoord : TEXCOORD0;
-};[/code
+};[/code]
 
 [code]struct VS_OUTPUT
 {

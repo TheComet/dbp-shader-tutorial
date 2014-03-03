@@ -35,7 +35,7 @@ But what's the point then? Isn't that the same as Cartesian?
 
 Not exactly, because this makes it possible to define points in infinity. For example:
 
-[code]float4 homogeneous = { 10.0f, 6.0f, 3.0f, 0.0f };{/code]
+[code]float4 homogeneous = { 10.0f, 6.0f, 3.0f, 0.0f };[/code]
 
 Oh oh, we've set [b]w[/b] to 0.0. If you look back a bit on how to convert to Cartesian, you'll notice that we're dividing x, y, and z by 0. Believe it or not, this is actually a valid coordinate. It defines a point located infinitely away, and we're doing that without using infinite numbers. This is how the GPU handles correct projections without causing undefined behaviour.
 
