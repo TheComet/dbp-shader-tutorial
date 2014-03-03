@@ -1,39 +1,57 @@
 #!/usr/bin/env python
 
-import optparse
+import os
+import fnmatch
+import shutil
 
 
 if __name__ == '__main__':
+	
+	# build a list of files to convert
+	bbfiles = []
+	for root, dirnames, filenames in os.walk('.'):
+		for filename in fnmatch.filter(filenames, '*.bb'):
+			bbfiles.append((os.path.join(root, filename), (filename)))
 
-	def _format_option_string(option):
-                ''' ('-o', '--option') -> -o, --format METAVAR'''
+	# output directory
+	if os.path.exists('html'):
+		shutil.rmtree('html')
+	os.makedirs('html')
 
-                opts = []
+	# convert all bb files to html
+	for current_bb in bbfiles:
 
-                if option._short_opts: opts.append(option._short_opts[0])
-                if option._long_opts: opts.append(option._long_opts[0])
-                if len(opts) > 1: opts.insert(1, ', ')
+		# read contents of file
+		with open(current_bb[0], 'r') as in_file:
+			data = in_file.read()
+			in_file.close()
 
-                if option.takes_value(): opts.append(' %s' % option.metavar)
+		# simple tags to convert
+		simpletags = (('[b]', '<b>'),
+			('[i]', '<i>'),
+			('\n', '<br>'),
+			('[/b]', '</b>'),
+			('[/i]', '</i>'),
+			('[center]', '<center>'),
+			('[/center]', '</center>'),
+			('[img]', '<img src="'),
+			('[/img]', '">'),
+			('[code]', '<font size="3" color="#000066" face="verdana"><pre>'),
+			('[code lang=dbp]', '<font size="3" color="#000066" face="verdana"><pre>'),
+			('[/code]', '</pre></font>'),
+			('[/href]', '</a>'))
 
-                return "".join(opts)
+		# convert
+		for tag in simpletags:
+			data = data.replace(tag[0], tag[1])
 
-	fmt = optparse.IndentedHelpFormatter(width=max_width, max_help_position=max_help_position)
-        fmt.format_option_strings = _format_option_string
+		# HACK: assume any left over closing brackets are from urls
+		data = data.replace('[href=', '<a href="')
+		data = data.replace(']', '">')
 
-        kw = {
-                'version'   : __version__,
-                'formatter' : fmt,
-                'usage' : '%prog [options] url [url...]',
-                'conflict_handler' : 'resolve',
-        }
+		# output file
+		with open('html/' + current_bb[1].replace('bb', 'html'), 'w') as out_file:
+			out_file.write(data)
+			out_file.close()
 
-        parser = optparse.OptionParser(**kw)
-
-	general = optparseOptionGroup(parser, 'General Options')
-
-	general.add_option('-h', '--help',
-		action = 'help', help='print this help text and exit')
-
-	parser.add_option_group(general)
-
+		print 'processed file ' + current_bb[0]

@@ -11,3 +11,6 @@
 
 # temp sources
 _Temp.dbsource
+
+# html files are auto-generated
+/html

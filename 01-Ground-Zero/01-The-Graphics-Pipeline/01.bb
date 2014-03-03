@@ -17,6 +17,8 @@ A Graphics Processing Unit (GPU) is a specialised electronic circuit designed to
 
 Unlike a CPU, the architecture of a GPU is highly parallelised. A single GPU contains [i]thousands[/i] of cores, with the ability to reach a total processing power of multiple Tflop/s (10¹² floating point operations per second).
 
+[img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/cuda-core_zpsc8ea9c8d.gif[/img]
+
 You may ask yourself: Why hasn't the CPU been replaced by a GPU yet? The GPU is obviously over a million times faster. The answer is quite simple: Some mathematical problems cannot be solved in parallel efficiently, while some can. The CPU is designed to solve sequential problems, while the GPU is designed to solve parallel problems.
 
 For example, think about the code you wrote in your latest project. Each command you typed in needs to be processed sequentially. One after another. It wouldn't make sense to try and texture an object that hasn't been loaded yet. It wouldn't make sense to try and render an object when you haven't even opened the window yet. It wouldn't make sense for your enemy to search for a path and at the same time try to follow the path, because the path data hasn't finished calculating yet. The path needs to first exist before the enemy can follow it.
