@@ -91,15 +91,25 @@ Since the position attribute requires 3 floats, the normal attribute requires 3 
 
 Lastly, [b]vertCount[/b] tells us the total amount of vertices that are composing the object, which, as mentioned earlier, will be 36 on an unoptimised cube.
 
-When it's time for an object to be drawn, all of its vertices and its attributes are passed to the [b]vertex shader[/b]. At this point, bob is still just a bunch of points located in [b]object space[/b].
+When it's time for an object to be drawn, all of its vertices and its attributes are passed to the [b]vertex shader[/b]. At this point, bob is still just a bunch of points located in [b]object space[/b]. Getting him to the screen requires the following steps:
+[b]*[/b] Vertex shader takes all vertices of the object
+[b]-->[/b] Vertex shader transforms all vertices into [b]world space[/b]
+[b]-->[/b] Vertex shader transforms vertices from [b]world space[/b] into [b]view space[/b]
+[b]-->[/b] Vertex shader transforms vertices from [b]view space[/b] into [b]projection space[/b]
+[b]*[/b] Rasterizer takes vertices from vertex shader and fills in all of the surfaces. A list of pixels is generated.
+[b]*[/b] Pixel shader takes list of pixels from rasterizer
+[b]-->[/b] Pixel shader samples from textures, and applies them to the pixels
+[b]-->[/b] Pixel shader outputs all pixels to a [b]render target[/b] (in this case, the screen)
+
+Here are some illustrations for each of the steps mentioned above. Beginning with the vertices:
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/object-space-vertices_zpsb1cac2d0.png[/img]
 
-The first thing that happens is the GPU will transform all of the vertices into [b]world space[/b]. This effectively places bob into the 3D world at the position the programmer placed him, which is determined by the DBP commands [b]position object[/b], [b]rotate object[/b], and [b]scale object[/b]. Those three commands generate what's known as the [b]world matrix[/b], which is also uploaded so the GPU knows how to transform bob into world space.
+The first thing that happens is the vertex shader will transform all of the vertices into [b]world space[/b]. This effectively places bob into the 3D world at the position the programmer placed him, which is determined by the DBP commands [b]position object[/b], [b]rotate object[/b], and [b]scale object[/b]. Those three commands generate what's known as the [b]world matrix[/b], which is also uploaded so the GPU knows how to transform bob into world space.
 
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/world-transform_zpsb1cac2d0.png[/img]
 
-In other words, the vertices in VRAM never change. Even when you position the object, rotate the object, etc. you aren't actually moving the vertices. You're only telling the GPU how the object was transformed. And if you think about it, that's a good thing, because if you were to actually change the vertices in VRAM, the model would begin to distort the more you reposition it, because floating point values have a certain inaccuracy.
+In other words, the vertices in VRAM never change. Even when you position the object, rotate the object, etc. you aren't actually moving the vertices. You're only telling the GPU how the object was transformed. And if you think about it, that's a good thing, because if you were to actually change the vertices in VRAM, the model would begin to distort the more you reposition it, because floating point datatypes only have a finite accuracy.
 
 Next, the GPU will transform all vertices into [b]view space[/b]. This effectively places bob relative to where the camera is located and positioned and pointing, which is determined by the DBP commands [b]position camera[/b], and [b]rotate camera[/b]. Those commands generate what's known as the [b]view matrix[/b], which is also uploaded so the GPU knows how to transform bob into view space.
 

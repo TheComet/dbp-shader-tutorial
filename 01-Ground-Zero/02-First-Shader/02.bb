@@ -83,10 +83,12 @@ Go into the folder [b]02-simple-shader[/b], open the DBPro project and compile a
 [img]http://i254.photobucket.com/albums/hh100/TheComet92/shader-tutorial-res/01-simple-shader_zps86dad6fe.png[/img]
 
 Go ahead and open the file [b]simple-shader.fx[/b] with a text editor. I prefer using [href=http://notepad-plus-plus.org/]Notepad++[/href], with the [href=http://www.enchantedage.com/node/97]HLSL syntax highlighting plugin[/href].
+I
+At the very top of your shader are various [b]shader constants[/b]. Some of these are user-defined, and can be set through DBP by using the commands [b]set effect constant float[/b] or [b]set effect constant vector[/b]. This gives you a nice way of controlling parameters from within DBP. Other shader constants gain their values from what's known as [b]semantics[/b].
 
-At the very top of your shader are various [b]shader constants[/b]. Some of these are user-defined, and can be set through DBP by using the commands [b]set effect constant float[/b] or [b]set effect constant vector[/b]. Others gain their values from what's known as [b]semantics[/b].
+In Tutorial 01, we discussed how the vertex shader transformed Bob into world space, then into view space, then into projection space by using matrices. Where do these matrices come from?
 
-In Tutorial 01, we discussed how the vertex shader transformed Bob into world space, then into view space, then into projection space by using matrices. There are a bunch of pre-defined semantics for accessing these matrices, one of them being the following:
+Fortunately, they are actually generated automatically by DBP, and there are a bunch of pre-defined semantics for accessing them, one of them being the following:
 
 Make sure to try and implement the stuff below in your [b]PLAYGROUND[/b] folder on your own, so you really understand how it works.
 
@@ -97,7 +99,9 @@ As the name implies, the world, view, and projection matrices have all been mult
 
 By writing the code above, the variable [b]matWorldViewProjection[/b] will automatically be assigned the world view projection matrix, because [b]WORLDVIEWPROJECTION[/b] is the semantic for said matrix.
 
-For a complete list of semantics, you can look at the official MSDN documentation [href=http://msdn.microsoft.com/en-us/library/windows/desktop/bb509647(v=vs.85).aspx]here[/href].
+For a complete list of semantics, you can look at the official MSDN documentation [href=http://msdn.microsoft.com/en-us/library/windows/desktop/bb509647(v=vs.85).aspx]here[/href]. But don't worry, 95% of the time the world view projection matrix is the only matrix you will ever need.
+
+
 
 The next thing we need is to consider the data going in and out of the vertex and pixel shader programs.
 
@@ -149,7 +153,7 @@ Now it's time to write the vertex shader program. Here it is.
 
 This little section of code is where all of our vertex manipulation happens. In our case, we transform all vertices into projection space, as discussed in Tutorial 01, by multiplying each vertex by the world view projection matrix.
 
-[b]Very important to understand:[/b] The vertex shader is [b]executed once for every vertex of the object[/b]. This means that if your object has 36 vertices, [b]vs_main[/b] is called 36 times, and every time it's called, the variable [b]input.position[/b] contains the position of the next vertex. You may have guessed it: Yes, all 36 instances of vs_main are executed in parallel, one on each core of the GPU. Since the GPU has thousands of cores, even an object with tens of thousands of vertices will only take a fraction of a microsecond to compute.
+[b]Very important to understand:[/b] The vertex shader is [b]executed once for every vertex of the object[/b]. This means that if your object has 36 vertices, [b]vs_main[/b] is called 36 times, and every time it's called, the variable [b]input.position[/b] contains the position of the active vertex. You may have guessed it: Yes, all 36 instances of vs_main are executed in parallel, one on each core of the GPU. Since the GPU has thousands of cores, even an object with tens of thousands of vertices will only take a fraction of a microsecond to compute.
 
 Next up, we need a pixel shader. Here it is.
 [code]PS_OUTPUT ps_main( PS_INPUT input )
@@ -182,7 +186,7 @@ The very last thing to do is to tell DBP how to compile and execute the vertex a
 
 Here, you are looking at a technique containing a single pass, which compiles the vertex and pixel shader programs above using shader model 1.1. Basically, the lower the shader model version, the more hardware you'll be able to support, but the less shader features you'll be able to use.
 
-DBP supports up to shader model 2.0.
+DBP supports up to shader model 3.0.
 
 
 
